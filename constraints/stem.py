@@ -1,6 +1,6 @@
 import nuad.constraints as nc
 
-from ..utils._stem_length import _stem_length
+from utils._stem_length import _stem_length
 
 class StemConstraint(nc.StrandConstraint):
 
@@ -21,12 +21,12 @@ class StemConstraint(nc.StrandConstraint):
     def _evaluate(self, seqs: tuple[str, ...], strand: nc.Strand | None) -> nc.Result:
 
         seq = seqs[0]
-        v = _stem_length(seq)
+        bps, v = _stem_length(seq)
         e = max(0, self.lo - v) + max(0, v - self.hi)
 
         return nc.Result(
             excess=e,
             value=v,
             unit=self.unit,
-            summary=f"Stem size: {v} (excess: {e})"
+            summary=f"Stem size: {v} (excess: {e}) with pairs {bps}"
         )

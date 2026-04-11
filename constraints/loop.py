@@ -1,6 +1,6 @@
 import nuad.constraints as nc
 
-from ..utils._loop_size import _loop_size
+from utils._loop_size import _loop_size
 
 class LoopConstraint(nc.StrandConstraint):
 

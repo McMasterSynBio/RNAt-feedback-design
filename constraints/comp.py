@@ -1,6 +1,6 @@
 import nuad.constraints as nc
 
-from ..utils._composition import _au_gc_comp
+from utils._composition import _au_gc_comp
 
 class CompositionConstraint(nc.StrandConstraint):
 

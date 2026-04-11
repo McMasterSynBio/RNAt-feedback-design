@@ -1,8 +1,10 @@
 import os, sys, argparse
+from ._stem_length import _stem_length
 
 def _loop_size(seq: str) -> int:
     """Returns the size of the loop in a given sequence."""
-    return 0
+    bps, n = _stem_length(seq)
+    return bps[-1][1] - bps[-1][0] - 1 if len(bps) > 0 else 10**9 # Some v large value arbitrarily
 
 if __name__ == "__main__":
 
