@@ -1,11 +1,13 @@
 [project]
+requires-python = ">=3.11,<3.14"
 name = "rnat-feedback-design"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.11"
 dependencies = [
-    "nupack>=4.0.2.0",
+    "argparse>=1.4.0",
     "pandas>=3.0.2",
     "scipy>=1.17.1",
 ]
+[tool.uv.sources]
+nupack = { path = "./vendor/nupack-4.0.2.0/package", editable = false }
