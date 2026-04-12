@@ -13,7 +13,7 @@ class StemConstraint(nc.StrandConstraint):
     """
 
 
-    def __init__(self, weight=1, lo=0, hi=100, unit="nt"):
+    def __init__(self, weight=1, lo=3, hi=25, unit="nt"):
     
         super().__init__(
             short_description="Stem size constraint",
@@ -21,8 +21,6 @@ class StemConstraint(nc.StrandConstraint):
             weight=weight,
             evaluate=self._evaluate,
         )
-
-        self.w = weight
         self.lo = lo
         self.hi = hi
         self.unit = unit
@@ -34,7 +32,7 @@ class StemConstraint(nc.StrandConstraint):
         e = max(0, self.lo - v) + max(0, v - self.hi)
 
         return nc.Result(
-            excess=e,
+            excess=e * self.weight,
             value=v,
             unit=self.unit,
             summary=f"Stem size: {v} (excess: {e}) with pairs {bps}"

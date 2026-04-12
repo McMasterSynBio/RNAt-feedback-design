@@ -1,0 +1,7 @@
+{
+  "seq_length": 25,
+  "num_runs": 20,
+  "target_tm": 42.0,
+  "max_iterations": null,
+  "base_random_seed": 42
+}

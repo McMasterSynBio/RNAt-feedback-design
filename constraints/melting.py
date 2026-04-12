@@ -1,6 +1,6 @@
 import nuad.constraints as nc
 
-from utils._melting import estimate_tm
+from utils.therm._melting import estimate_tm
 
 
 class MeltingConstraint(nc.StrandConstraint):
@@ -41,7 +41,7 @@ class MeltingConstraint(nc.StrandConstraint):
         excess = max(0.0, deviation - self.tolerance)
 
         return nc.Result(
-            excess=excess,
+            excess=excess * self.weight,
             value=tm,
             unit="°C",
             summary=f"Tm={tm:.1f}°C (target {self.target}°C, excess={excess:.2f})",

@@ -12,7 +12,7 @@ class LoopConstraint(nc.StrandConstraint):
         (i.e. 1st to 3rd quartiles statistically)
     """
 
-    def __init__(self, weight=1, lo=0, hi=100, unit="nt"):
+    def __init__(self, weight=1, lo=4, hi=12, unit="nt"):
     
         super().__init__(
             short_description="Loop size constraint",
@@ -20,8 +20,6 @@ class LoopConstraint(nc.StrandConstraint):
             weight=weight,
             evaluate=self._evaluate,
         )
-
-        self.w = weight
         self.lo = lo
         self.hi = hi
         self.unit = unit
@@ -33,7 +31,7 @@ class LoopConstraint(nc.StrandConstraint):
         e = max(0, self.lo - v) + max(0, v - self.hi)
 
         return nc.Result(
-            excess=e,
+            excess=e * self.weight,
             value=v,
             unit=self.unit,
             summary=f"Loop size: {v} (excess: {e})"

@@ -16,13 +16,14 @@ from pathlib import Path
 
 import nuad.constraints as nc
 import nuad.search as ns
-from utils._melting import estimate_tm
+from utils.therm._melting import estimate_tm
 
 from constraints import (
     CompositionConstraint,
     LoopConstraint,
     MeltingConstraint,
     StemConstraint,
+    KozakExposureConstraint,
 )
 
 # MARK: Helpers
@@ -44,20 +45,12 @@ def _write_settings(out_root: Path, **settings):
 
 def _build_constraints(
     target_tm: float,
-    tm_tolerance: float,
-    gc_lo: float,
-    gc_hi: float,
-    loop_lo: int,
-    loop_hi: int,
-    stem_lo: int,
-    stem_hi: int,
-    tm_weight: float,
 ) -> list[nc.Constraint]:
     return [
-        MeltingConstraint(target=target_tm, tolerance=tm_tolerance, weight=tm_weight),
-        CompositionConstraint(weight=1.0, lo=gc_lo, hi=gc_hi),
-        LoopConstraint(weight=1.0, lo=loop_lo, hi=loop_hi),
-        StemConstraint(weight=1.0, lo=stem_lo, hi=stem_hi),
+        KozakExposureConstraint(target=target_tm, weight=6.0),
+        CompositionConstraint(),
+        LoopConstraint(),
+        StemConstraint(),
     ]
 
 
@@ -119,14 +112,6 @@ def run_design_pipeline(
     seq_length: int = 30,
     num_runs: int = 10,
     target_tm: float = 37.0,
-    tm_tolerance: float = 1.0,
-    tm_weight: float = 5.0,
-    gc_lo: float = 0.4,
-    gc_hi: float = 0.6,
-    loop_lo: int = 3,
-    loop_hi: int = 10,
-    stem_lo: int = 5,
-    stem_hi: int = 15,
     max_iterations: int | None = None,
     out_directory: str = "results",
     base_random_seed: int = 42,
@@ -141,12 +126,6 @@ def run_design_pipeline(
         Number of independent search runs (diversity).
     target_tm : float
         Desired melting temperature in °C.
-    tm_tolerance : float
-        Acceptable deviation from target_tm before penalty kicks in.
-    tm_weight : float
-        Relative weight of the Tm constraint vs structural ones.
-    gc_lo, gc_hi : float
-        GC content fraction bounds [0-1].
     loop_lo, loop_hi : int
         Allowed loop size range (nt).
     stem_lo, stem_hi : int
@@ -163,29 +142,11 @@ def run_design_pipeline(
         seq_length=seq_length,
         num_runs=num_runs,
         target_tm=target_tm,
-        tm_tolerance=tm_tolerance,
-        tm_weight=tm_weight,
-        gc_lo=gc_lo,
-        gc_hi=gc_hi,
-        loop_lo=loop_lo,
-        loop_hi=loop_hi,
-        stem_lo=stem_lo,
-        stem_hi=stem_hi,
         max_iterations=max_iterations,
         base_random_seed=base_random_seed,
     )
 
-    constraints = _build_constraints(
-        target_tm=target_tm,
-        tm_tolerance=tm_tolerance,
-        gc_lo=gc_lo,
-        gc_hi=gc_hi,
-        loop_lo=loop_lo,
-        loop_hi=loop_hi,
-        stem_lo=stem_lo,
-        stem_hi=stem_hi,
-        tm_weight=tm_weight,
-    )
+    constraints = _build_constraints(target_tm)
 
     out_root = Path(out_directory)
     out_root.mkdir(parents=True, exist_ok=True)

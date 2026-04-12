@@ -11,7 +11,7 @@ class CompositionConstraint(nc.StrandConstraint):
         The ideal range of choice can be determined base on the use case and biological feasilibity/relevance.
     """
 
-    def __init__(self, weight=1, lo=0, hi=100, unit="nt"):
+    def __init__(self, weight=1, lo=0.2, hi=0.8, unit="nt"):
     
         super().__init__(
             short_description="Composition constraint",
@@ -19,8 +19,6 @@ class CompositionConstraint(nc.StrandConstraint):
             weight=weight,
             evaluate=self._evaluate,
         )
-
-        self.w = weight
         self.lo = lo
         self.hi = hi
         self.unit = unit
@@ -32,7 +30,7 @@ class CompositionConstraint(nc.StrandConstraint):
         e = max(0, self.lo - v) + max(0, v - self.hi)
 
         return nc.Result(
-            excess=e,
+            excess=e * self.weight,
             value=v,
             unit=self.unit,
             summary=f"AU/GC composition: {v} (excess: {e})"
