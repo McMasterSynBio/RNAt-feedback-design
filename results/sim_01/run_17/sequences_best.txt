@@ -1,0 +1,1 @@
+strand_17  default_strand_group  CATCGTGTGGCAGAACCTTT

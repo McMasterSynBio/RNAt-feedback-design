@@ -1,1 +1,0 @@
-test_strand  default_strand_group  CGCCAATTGGAAGCCACGAACATCTTTTTC

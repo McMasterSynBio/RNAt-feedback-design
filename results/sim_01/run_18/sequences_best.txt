@@ -1,0 +1,1 @@
+strand_18  default_strand_group  GTAGATTCGCACCTAAGACT

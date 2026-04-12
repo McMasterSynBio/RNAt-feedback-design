@@ -3,6 +3,13 @@ import nuad.constraints as nc
 from utils._composition import _au_gc_comp
 
 class CompositionConstraint(nc.StrandConstraint):
+    """
+    A derivative of nuad.constraints.StrandConstraint. 
+    Objective:
+        Compute the GC composition content and keeps it within the range passed on to it.
+    Note:
+        The ideal range of choice can be determined base on the use case and biological feasilibity/relevance.
+    """
 
     def __init__(self, weight=1, lo=0, hi=100, unit="nt"):
     
@@ -20,7 +27,7 @@ class CompositionConstraint(nc.StrandConstraint):
 
     def _evaluate(self, seqs: tuple[str, ...], strand: nc.Strand | None) -> nc.Result:
 
-        seq = seqs[0]
+        seq = seqs[0].replace("T", "U")
         v = _au_gc_comp(seq)
         e = max(0, self.lo - v) + max(0, v - self.hi)
 
