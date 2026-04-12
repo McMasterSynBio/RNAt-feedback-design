@@ -3,6 +3,14 @@ import nuad.constraints as nc
 from utils._loop_size import _loop_size
 
 class LoopConstraint(nc.StrandConstraint):
+    """
+    Derivative of nuad.constraints.StrandConstraint.
+    Objective:
+        Keeps the loop size of the sequence within a desired range.
+    Note:
+        The high and low bounds can be determined by the biological relevance/feasibility of sequences within them.
+        (i.e. 1st to 3rd quartiles statistically)
+    """
 
     def __init__(self, weight=1, lo=0, hi=100, unit="nt"):
     
@@ -20,7 +28,7 @@ class LoopConstraint(nc.StrandConstraint):
 
     def _evaluate(self, seqs: tuple[str, ...], strand: nc.Strand | None) -> nc.Result:
 
-        seq = seqs[0]
+        seq = seqs[0].replace("T", "U")
         v = _loop_size(seq)
         e = max(0, self.lo - v) + max(0, v - self.hi)
 

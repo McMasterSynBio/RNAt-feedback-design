@@ -3,6 +3,15 @@ import nuad.constraints as nc
 from utils._stem_length import _stem_length
 
 class StemConstraint(nc.StrandConstraint):
+    """
+    Derivative of nuad.constraints.StrandConstraint.
+    Objective:
+        Keeps the stem length of the sequence within a desired range.
+    Note:
+        The high and low bounds can be determined by the biological relevance/feasibility of sequences within them.
+        (i.e. 1st to 3rd quartiles statistically)
+    """
+
 
     def __init__(self, weight=1, lo=0, hi=100, unit="nt"):
     
@@ -20,7 +29,7 @@ class StemConstraint(nc.StrandConstraint):
 
     def _evaluate(self, seqs: tuple[str, ...], strand: nc.Strand | None) -> nc.Result:
 
-        seq = seqs[0]
+        seq = seqs[0].replace("T", "U")
         bps, v = _stem_length(seq)
         e = max(0, self.lo - v) + max(0, v - self.hi)
 
