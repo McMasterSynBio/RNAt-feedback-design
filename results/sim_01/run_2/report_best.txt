@@ -1,0 +1,40 @@
+Report on constraints
+=====================
+total evaluations: 4
+total violations: 0
+total score of constraint violations: 0.00
+
+******************************************************************
+* Penalises sequences whose Tm deviates from 42.0°C beyond ±1.0°C.
+* evaluations: 1
+* violations:  0
+* score of violations: 0.00
+
+  strand strand_2: Tm=41.7°C (target 42.0°C, excess=0.00);  score: 0.00
+
+
+*******************************************************************************************
+* A constraint that penalizes sequences with AU/GC composition outside the specified range.
+* evaluations: 1
+* violations:  0
+* score of violations: 0.00
+
+  strand strand_2: AU/GC composition: 0.55 (excess: 0);  score: 0.00
+
+
+************************************************************************************
+* A constraint that penalizes sequences with loop sizes outside the specified range.
+* evaluations: 1
+* violations:  0
+* score of violations: 0.00
+
+  strand strand_2: Loop size: 3 (excess: 0);  score: 0.00
+
+
+************************************************************************************
+* A constraint that penalizes sequences with stem sizes outside the specified range.
+* evaluations: 1
+* violations:  0
+* score of violations: 0.00
+
+  strand strand_2: Stem size: 6 (excess: 0) with pairs [(1, 11), (2, 10), (4, 8), (12, 20), (13, 19), (14, 18)];  score: 0.00

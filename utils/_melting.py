@@ -16,7 +16,7 @@ def _structure_energy_at(seq: str, structure: nupack.Structure, celsius: float) 
     return float(nupack.structure_energy([strand], structure, model=model))
 
 
-def _estimate_tm(
+def estimate_tm(
     seq: str,
     t_lo: float = 10.0,
     t_hi: float = 90.0,
@@ -45,6 +45,8 @@ def _estimate_tm(
     if dG_hi <= 0:
         return t_hi
 
+    # Final structure energy at mfe optimal, varying temperatures
+    # Lowest energy value (most stable) is likely most relevant to the structure.
     tm = brentq(
         lambda t: _structure_energy_at(seq, mfe_struct, t),
         t_lo, t_hi, xtol=0.1,

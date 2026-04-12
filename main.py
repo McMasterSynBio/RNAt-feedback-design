@@ -12,7 +12,7 @@ Usage examples:
     python main.py --target-tm 42 --seq-length 40 --num-runs 20
 """
 
-import argparse
+import argparse, os, sys
 
 from designer import run_design_pipeline
 
@@ -44,6 +44,17 @@ def main():
 
     args = parser.parse_args()
 
+    # Safety assertions
+    assert 8 < args.seq_length < 31, "Sequence length must be between 9 and 30 nt."
+    assert 0 <= args.gc_lo <= args.gc_hi <= 1, "GC content bounds must be between 0 and 1."
+    assert 0 < args.loop_lo <= args.loop_hi < args.seq_length, "Loop size bounds must be positive and less than sequence length."
+    assert 0 < args.stem_lo <= args.stem_hi < args.seq_length, "Stem length bounds must be positive and less than sequence length."
+
+    # dirs within /results
+    n_sim = sum(1 for entry in os.scandir(args.out_dir) if entry.is_dir())
+    out_root = os.path.join(args.out_dir, f"sim_{n_sim+1:02d}")
+    os.makedirs(out_root, exist_ok=True)
+
     run_design_pipeline(
         seq_length=args.seq_length,
         num_runs=args.num_runs,
@@ -57,7 +68,7 @@ def main():
         stem_lo=args.stem_lo,
         stem_hi=args.stem_hi,
         max_iterations=args.max_iterations,
-        out_directory=args.out_dir,
+        out_directory=out_root,
         base_random_seed=args.random_seed,
     )
 

@@ -1,6 +1,6 @@
 import nuad.constraints as nc
 
-from utils._melting import _estimate_tm
+from utils._melting import estimate_tm
 
 
 class MeltingConstraint(nc.StrandConstraint):
@@ -36,7 +36,7 @@ class MeltingConstraint(nc.StrandConstraint):
 
     def _evaluate(self, seqs: tuple[str, ...], strand: nc.Strand | None) -> nc.Result:
         seq = seqs[0].replace("T", "U")
-        tm = _estimate_tm(seq, t_lo=self.t_lo, t_hi=self.t_hi)
+        tm = estimate_tm(seq, t_lo=self.t_lo, t_hi=self.t_hi)
         deviation = abs(tm - self.target)
         excess = max(0.0, deviation - self.tolerance)
 

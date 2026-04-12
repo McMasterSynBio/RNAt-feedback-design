@@ -1,0 +1,1 @@
+strand_10  default_strand_group  GTCCCGGACTGTATAGAATG

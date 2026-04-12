@@ -6,6 +6,8 @@ mutates via Hamming-distance steps, scored against the constraint set.
 Results are collected, deduplicated, and ranked by proximity to target Tm.
 """
 
+# MARK: Imports
+
 from __future__ import annotations
 
 import json
@@ -14,6 +16,7 @@ from pathlib import Path
 
 import nuad.constraints as nc
 import nuad.search as ns
+from utils._melting import estimate_tm
 
 from constraints import (
     CompositionConstraint,
@@ -22,6 +25,7 @@ from constraints import (
     StemConstraint,
 )
 
+# MARK: Helpers
 
 @dataclass
 class DesignResult:
@@ -30,6 +34,12 @@ class DesignResult:
     tm: float | None
     total_excess: float
     run_id: int
+
+def _write_settings(out_root: Path, **settings):
+    settings_path = out_root / "settings.json"
+    with open(settings_path, "w") as fh:
+        json.dump(settings, fh, indent=2)
+
 
 
 def _build_constraints(
@@ -51,6 +61,7 @@ def _build_constraints(
     ]
 
 
+# MARK: Single Run
 def _run_single(
     run_id: int,
     seq_length: int,
@@ -87,15 +98,13 @@ def _run_single(
     with open(design_file) as fh:
         data = json.load(fh)
 
-    # Extract sequence from design JSON
+    # Extract sequence from design JSON and convert to RNA alphabet
     domains = data.get("domains", [])
     if not domains:
         return None
-    best_seq = domains[0].get("sequence", "")
+    best_seq = domains[0].get("sequence", "").replace("T", "U")
 
-    # Compute Tm of the best result for ranking
-    from utils._melting import _estimate_tm
-    tm = _estimate_tm(best_seq)
+    tm = estimate_tm(best_seq)
 
     return DesignResult(
         sequence=best_seq,
@@ -105,6 +114,7 @@ def _run_single(
     )
 
 
+# MARK: Main Pipeline
 def run_design_pipeline(
     seq_length: int = 30,
     num_runs: int = 10,
@@ -148,6 +158,23 @@ def run_design_pipeline(
     base_random_seed : int
         Base seed — each run uses base_random_seed + run_id.
     """
+    _write_settings(
+        out_root=Path(out_directory),
+        seq_length=seq_length,
+        num_runs=num_runs,
+        target_tm=target_tm,
+        tm_tolerance=tm_tolerance,
+        tm_weight=tm_weight,
+        gc_lo=gc_lo,
+        gc_hi=gc_hi,
+        loop_lo=loop_lo,
+        loop_hi=loop_hi,
+        stem_lo=stem_lo,
+        stem_hi=stem_hi,
+        max_iterations=max_iterations,
+        base_random_seed=base_random_seed,
+    )
+
     constraints = _build_constraints(
         target_tm=target_tm,
         tm_tolerance=tm_tolerance,
@@ -182,7 +209,7 @@ def run_design_pipeline(
             results.append(result)
 
     # Deduplicate by sequence
-    seen: set[str] = set()
+    seen = set()
     unique: list[DesignResult] = []
     for r in results:
         if r.sequence not in seen:
@@ -193,12 +220,12 @@ def run_design_pipeline(
     unique.sort(key=lambda r: abs((r.tm or 999) - target_tm))
 
     # Write summary
-    summary_path = out_root / "summary.tsv"
+    summary_path = out_root / "summary.csv"
     with open(summary_path, "w") as fh:
-        fh.write("rank\tsequence\tTm_C\tdelta_Tm\trun_id\n")
+        fh.write("rank,sequence,Tm_C,delta_Tm,run_id\n")
         for rank, r in enumerate(unique, 1):
             delta = abs((r.tm or 999) - target_tm)
-            fh.write(f"{rank}\t{r.sequence}\t{r.tm:.1f}\t{delta:.1f}\t{r.run_id}\n")
+            fh.write(f"{rank},{r.sequence},{r.tm:.1f},{delta:.1f},{r.run_id}\n")
 
     print(f"\n{'='*60}")
     print(f"  Pipeline complete — {len(unique)} unique sequences")
