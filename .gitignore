@@ -1,4 +1,7 @@
 *.zip
 __pycache__
+# Data
+data/*
+!data/.gitkeep
 # Folders
 vendor
