@@ -3,5 +3,6 @@ __pycache__
 # Data
 data/*
 !data/.gitkeep
+results/sim_*
 # Folders
 vendor
