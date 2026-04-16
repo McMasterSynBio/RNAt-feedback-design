@@ -31,7 +31,7 @@ class LoopConstraint(nc.StrandConstraint):
         e = 0 if self.lo <= v <= self.hi else 1e2
 
         return nc.Result(
-            excess=e * self.weight,
+            excess=e,
             value=v,
             unit=self.unit,
             summary=f"Loop size: {v} (excess: {e})"

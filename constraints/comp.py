@@ -30,7 +30,7 @@ class CompositionConstraint(nc.StrandConstraint):
         e = 0 if self.lo <= v <= self.hi else 1e2
 
         return nc.Result(
-            excess=e * self.weight,
+            excess=e,
             value=v,
             unit=self.unit,
             summary=f"AU/GC composition: {v} (excess: {e})"

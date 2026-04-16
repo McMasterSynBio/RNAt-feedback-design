@@ -63,7 +63,7 @@ class KozakExposureConstraint(nc.StrandConstraint):
         value = np.mean(wp)
         # Return results
         return nc.Result(
-            excess=excess * self.weight,
+            excess=excess,
             value=value,
             unit=None,
             summary=f"Fold error: {excess:.4f} with average weighted exposure probability {value:.4f}",
