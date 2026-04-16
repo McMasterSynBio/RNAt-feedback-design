@@ -9,14 +9,18 @@ class KozakExposureConstraint(nc.StrandConstraint):
 
     Uses NUPACK's partition function (ΔG_ensemble) across a temperature sweep
     to locate the Kozak exposure probability.
+
+    Inputs:
+        target: Desired Kozak exposure probability (0-100C).
+        weight: Relative importance of this constraint in the overall design.
+        t_step: Temperature step size for the sweep (°C).
+        alpha: Weighting factor between average exposure and bottleneck probability (0-1).
     """
 
     def __init__(
         self,
         target: float = 37.0,
         weight: float = 1.0,
-        t_lo: float = 20.0,
-        t_hi: float = 60.0,
         t_step: float = 0.5,
         alpha: float = 0.5
     ):
@@ -33,8 +37,8 @@ class KozakExposureConstraint(nc.StrandConstraint):
             evaluate=self._evaluate,
         )
         self.target = target
-        self.t_lo = t_lo
-        self.t_hi = t_hi
+        self.t_lo = target - 10
+        self.t_hi = target + 10
         self.t_step = t_step
         self.alpha = alpha
 
@@ -59,7 +63,7 @@ class KozakExposureConstraint(nc.StrandConstraint):
         value = np.mean(wp)
         # Return results
         return nc.Result(
-            excess=excess * self.weight,
+            excess=excess,
             value=value,
             unit=None,
             summary=f"Fold error: {excess:.4f} with average weighted exposure probability {value:.4f}",

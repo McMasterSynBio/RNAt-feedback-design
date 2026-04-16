@@ -9,12 +9,12 @@ Usage examples:
     python main.py --num-runs 3
 
     # Custom target Tm, sequence length, 20 runs for diversity
-    python main.py --target-tm 42 --seq-length 40 --num-runs 20
+    python main.py --target-tm 42 --flank-seq-length 40 --num-runs 20
 """
 
 import argparse, os, sys
 
-from designer import run_design_pipeline
+from pipelines import run_design_pipeline
 
 
 def main():
@@ -23,19 +23,19 @@ def main():
     )
 
     # Core design parameters
-    parser.add_argument("--seq-length",   type=int,   default=30,    help="Sequence length (nt)")
+    parser.add_argument("--flank-seq-length",   type=int,   default=30,    help="Flank sequence length (nt)")
     parser.add_argument("--num-runs",     type=int,   default=10,    help="Number of independent NUAD runs")
     parser.add_argument("--target-tm",    type=float, default=37.0,  help="Target melting temperature (°C)")
 
     # Search control
-    parser.add_argument("--max-iterations", type=int, default=None,  help="Max NUAD iterations per run")
-    parser.add_argument("--out-dir",      type=str,   default="results", help="Output directory")
+    parser.add_argument("--max-iterations", type=int, default=50,  help="Max NUAD iterations per run")
+    parser.add_argument("--out-dir",      type=str,   default="results/design", help="Output directory")
     parser.add_argument("--random-seed",  type=int,   default=42,    help="Base random seed")
 
     args = parser.parse_args()
 
     # Safety assertions
-    assert 8 < args.seq_length < 31, "Sequence length must be between 9 and 30 nt."
+    assert 8 < args.flank_seq_length < 31, "Flank sequence length must be between 9 and 30 nt."
 
     # dirs within /results
     n_sim = sum(1 for entry in os.scandir(args.out_dir) if entry.is_dir())
@@ -43,7 +43,7 @@ def main():
     os.makedirs(out_root, exist_ok=True)
 
     run_design_pipeline(
-        seq_length=args.seq_length,
+        flank_length=args.flank_seq_length,
         num_runs=args.num_runs,
         target_tm=args.target_tm,
         max_iterations=args.max_iterations,
