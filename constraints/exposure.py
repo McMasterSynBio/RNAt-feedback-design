@@ -15,8 +15,6 @@ class KozakExposureConstraint(nc.StrandConstraint):
         self,
         target: float = 37.0,
         weight: float = 1.0,
-        t_lo: float = 20.0,
-        t_hi: float = 60.0,
         t_step: float = 0.5,
         alpha: float = 0.5
     ):
@@ -33,8 +31,8 @@ class KozakExposureConstraint(nc.StrandConstraint):
             evaluate=self._evaluate,
         )
         self.target = target
-        self.t_lo = t_lo
-        self.t_hi = t_hi
+        self.t_lo = target - 10
+        self.t_hi = target + 10
         self.t_step = t_step
         self.alpha = alpha
 

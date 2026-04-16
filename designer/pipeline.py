@@ -1,9 +1,10 @@
 """Multi-run design pipeline.
 
 Orchestrates N independent NUAD searches to produce a diverse pool of RNA
-thermosensor candidates.  Each run starts from a different random seed and
+thermosensor candidates. Each run starts from a different random seed and
 mutates via Hamming-distance steps, scored against the constraint set.
-Results are collected, deduplicated, and ranked by proximity to target Tm.
+Results are collected, deduplicated, and ranked by exposure-based
+optimization score.
 """
 
 # MARK: Imports
@@ -11,17 +12,18 @@ Results are collected, deduplicated, and ranked by proximity to target Tm.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
+import numpy as np
 import nuad.constraints as nc
 import nuad.search as ns
-from utils.therm._melting import estimate_tm
+from utils.therm._exposure import _kozak_exposure_probability_temp
 
 from constraints import (
     CompositionConstraint,
     LoopConstraint,
-    MeltingConstraint,
     StemConstraint,
     KozakExposureConstraint,
 )
@@ -34,8 +36,11 @@ KOZAK = "AUGG"
 class DesignResult:
     """A single designed sequence with its constraint scores."""
     sequence: str
-    tm: float | None
     total_excess: float
+    exposure_error: float | None
+    exposure_at_target: float | None
+    mean_exposure_below: float | None
+    mean_exposure_above: float | None
     run_id: int
 
 def _write_settings(out_root: Path, **settings):
@@ -44,10 +49,85 @@ def _write_settings(out_root: Path, **settings):
         json.dump(settings, fh, indent=2)
 
 
+def _parse_report_metrics(report_path: Path) -> tuple[float | None, float | None]:
+    total_excess = None
+    exposure_error = None
+
+    total_pattern = re.compile(r"total score of constraint violations:\s*([0-9]+(?:\.[0-9]+)?)")
+    exposure_pattern = re.compile(r"Fold error:\s*([0-9]+(?:\.[0-9]+)?)")
+
+    with open(report_path) as fh:
+        for line in fh:
+            if total_excess is None:
+                match = total_pattern.search(line)
+                if match:
+                    total_excess = float(match.group(1))
+            if exposure_error is None and "Fold error:" in line:
+                match = exposure_pattern.search(line)
+                if match:
+                    exposure_error = float(match.group(1))
+
+    return total_excess, exposure_error
+
+
+def _target_exposure(seq: str, target_tm: float) -> float | None:
+    try:
+        avg, bn = _kozak_exposure_probability_temp(seq, target_tm)
+    except ValueError:
+        return None
+    return 0.5 * (avg + bn)
+
+
+def _exposure_window_means(
+    seq: str,
+    exposure_constraint: KozakExposureConstraint,
+) -> tuple[float | None, float | None]:
+    """
+    Calculate the mean exposure probabilities below and above the target temperature.
+
+    Args:
+        seq: RNA sequence.
+        exposure_constraint: KozakExposureConstraint object.
+
+    Returns:
+        A tuple containing the mean exposure probabilities below and above the target temperature.
+    """
+    temps = np.arange(
+        exposure_constraint.t_lo,
+        exposure_constraint.t_hi + exposure_constraint.t_step,
+        exposure_constraint.t_step,
+    )
+
+    weighted_probs = []
+    for temp in temps:
+        try:
+            avg, bn = _kozak_exposure_probability_temp(seq, temp)
+        except ValueError:
+            return None, None
+        weighted_probs.append(exposure_constraint.alpha * avg + (1 - exposure_constraint.alpha) * bn)
+
+    weighted_probs = np.array(weighted_probs)
+    below = temps < exposure_constraint.target
+    above = ~below
+
+    mean_below = float(np.mean(weighted_probs[below])) if np.any(below) else None
+    mean_above = float(np.mean(weighted_probs[above])) if np.any(above) else None
+    return mean_below, mean_above
+
+
 
 def _build_constraints(
     target_tm: float,
 ) -> list[nc.Constraint]:
+    """
+    Build a list of constraints for the RNA design.
+
+    Args:
+        target_tm: Target melting temperature.
+
+    Returns:
+        A list of NUAD constraints.
+    """
     return [
         KozakExposureConstraint(target=target_tm),
         CompositionConstraint(),
@@ -65,7 +145,18 @@ def _run_single(
     random_seed: int,
     max_iterations: int | None,
 ) -> DesignResult | None:
-    """Execute one NUAD search and return the best sequence found."""
+    """
+    Execute one NUAD search and return the best sequence found.
+    Args:
+        run_id: Unique identifier for the run.
+        flank_length: Length of the RNA sequence flank to design.
+        constraints: List of NUAD constraints to apply.
+        out_root: Root directory for output files.
+        random_seed: Random seed for reproducibility.
+        max_iterations: Maximum number of NUAD iterations.
+    Returns:
+        A DesignResult object with best sequence metrics.
+    """
     pool_flank = nc.DomainPool(
         name=f"flank_{run_id}", 
         length=flank_length
@@ -109,18 +200,28 @@ def _run_single(
     with open(design_file) as fh:
         data = json.load(fh)
 
+    report_file = Path(run_dir) / "report_best.txt"
+
     # Extract sequence from design JSON and convert to RNA alphabet
     domains = data.get("domains", [])
-    if not domains:
+    if len(domains) < 2:
         return None
     best_seq = domains[0].get("sequence", "").replace("T", "U") + domains[1].get("sequence", "").replace("T", "U") # flank + kozak
 
-    tm = estimate_tm(best_seq)
+    total_excess, exposure_error = _parse_report_metrics(report_file) if report_file.exists() else (None, None)
+    exposure_at_target = _target_exposure(best_seq, constraints[0].target) if constraints else None
+    mean_exposure_below = None
+    mean_exposure_above = None
+    if constraints and isinstance(constraints[0], KozakExposureConstraint):
+        mean_exposure_below, mean_exposure_above = _exposure_window_means(best_seq, constraints[0])
 
     return DesignResult(
         sequence=best_seq,
-        tm=tm,
-        total_excess=0.0,  # will be filled by ranking
+        total_excess=float("inf") if total_excess is None else total_excess,
+        exposure_error=exposure_error,
+        exposure_at_target=exposure_at_target,
+        mean_exposure_below=mean_exposure_below,
+        mean_exposure_above=mean_exposure_above,
         run_id=run_id,
     )
 
@@ -157,7 +258,8 @@ def run_design_pipeline(
     """
     _write_settings(
         out_root=Path(out_directory),
-        seq_length=flank_length,
+        flank_length=flank_length,
+        total_length=flank_length + len(KOZAK),
         num_runs=num_runs,
         target_tm=target_tm,
         max_iterations=max_iterations,
@@ -178,7 +280,7 @@ def run_design_pipeline(
 
         result = _run_single(
             run_id=run_id,
-            seq_length=flank_length,
+            flank_length=flank_length,
             constraints=constraints,
             out_root=out_root,
             random_seed=base_random_seed + run_id,
@@ -195,16 +297,32 @@ def run_design_pipeline(
             seen.add(r.sequence)
             unique.append(r)
 
-    # Sort by |Tm − target| (closest to target first)
-    unique.sort(key=lambda r: abs(r.tm - target_tm))
+    # Rank by the actual exposure-based optimization score.
+    unique.sort(
+        key=lambda r: (
+            r.total_excess,
+            float("inf") if r.exposure_error is None else r.exposure_error,
+            float("-inf") if r.mean_exposure_above is None else -r.mean_exposure_above,
+            float("inf") if r.mean_exposure_below is None else r.mean_exposure_below,
+        )
+    )
 
     # Write summary
     summary_path = out_root / "summary.csv"
     with open(summary_path, "w") as fh:
-        fh.write("rank,sequence,Tm_C,delta_Tm,run_id\n")
+        fh.write(
+            "rank,sequence,total_excess,exposure_error,exposure_at_target,"
+            "mean_exposure_below,mean_exposure_above,run_id\n"
+        )
         for rank, r in enumerate(unique, 1):
-            delta = abs(r.tm - target_tm)
-            fh.write(f"{rank},{r.sequence},{r.tm:.1f},{delta:.1f},{r.run_id}\n")
+            exposure_error = "" if r.exposure_error is None else f"{r.exposure_error:.4f}"
+            exposure_at_target = "" if r.exposure_at_target is None else f"{r.exposure_at_target:.4f}"
+            mean_exposure_below = "" if r.mean_exposure_below is None else f"{r.mean_exposure_below:.4f}"
+            mean_exposure_above = "" if r.mean_exposure_above is None else f"{r.mean_exposure_above:.4f}"
+            fh.write(
+                f"{rank},{r.sequence},{r.total_excess:.2f},{exposure_error},{exposure_at_target},"
+                f"{mean_exposure_below},{mean_exposure_above},{r.run_id}\n"
+            )
 
     print(f"\n{'='*60}")
     print(f"  Pipeline complete — {len(unique)} unique sequences")
@@ -212,7 +330,12 @@ def run_design_pipeline(
     print(f"{'='*60}\n")
 
     for rank, r in enumerate(unique[:10], 1):
-        delta = abs(r.tm - target_tm)
-        print(f"  #{rank}  Tm={r.tm:.1f}°C  (Δ={delta:.1f})  {r.sequence}")
+        exposure_error = "NA" if r.exposure_error is None else f"{r.exposure_error:.4f}"
+        below_str = "NA" if r.mean_exposure_below is None else f"{r.mean_exposure_below:.4f}"
+        above_str = "NA" if r.mean_exposure_above is None else f"{r.mean_exposure_above:.4f}"
+        print(
+            f"  #{rank}  score={r.total_excess:.2f}  exposure_error={exposure_error}  "
+            f"below={below_str}  above={above_str}  {r.sequence}"
+        )
 
     return unique

@@ -23,7 +23,7 @@ def main():
     )
 
     # Core design parameters
-    parser.add_argument("--flank-seq-length",   type=int,   default=30,    help="Sequence length (nt)")
+    parser.add_argument("--flank-seq-length",   type=int,   default=30,    help="Flank sequence length (nt)")
     parser.add_argument("--num-runs",     type=int,   default=10,    help="Number of independent NUAD runs")
     parser.add_argument("--target-tm",    type=float, default=37.0,  help="Target melting temperature (°C)")
 
@@ -35,7 +35,7 @@ def main():
     args = parser.parse_args()
 
     # Safety assertions
-    assert 8 < args.flank_seq_length < 31, "Sequence length must be between 9 and 30 nt."
+    assert 8 < args.flank_seq_length < 31, "Flank sequence length must be between 9 and 30 nt."
 
     # dirs within /results
     n_sim = sum(1 for entry in os.scandir(args.out_dir) if entry.is_dir())

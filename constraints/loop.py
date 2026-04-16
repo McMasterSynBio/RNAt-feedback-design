@@ -28,7 +28,7 @@ class LoopConstraint(nc.StrandConstraint):
 
         seq = seqs[0].replace("T", "U")
         v = _loop_size(seq)
-        e = max(0, self.lo - v) + max(0, v - self.hi)
+        e = 0 if self.lo <= v <= self.hi else 1e10
 
         return nc.Result(
             excess=e * self.weight,
