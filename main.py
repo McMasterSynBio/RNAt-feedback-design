@@ -14,7 +14,7 @@ Usage examples:
 
 import argparse, os, sys
 
-from designer import run_design_pipeline
+from pipelines import run_design_pipeline
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
 
     # Search control
     parser.add_argument("--max-iterations", type=int, default=50,  help="Max NUAD iterations per run")
-    parser.add_argument("--out-dir",      type=str,   default="results", help="Output directory")
+    parser.add_argument("--out-dir",      type=str,   default="results/design", help="Output directory")
     parser.add_argument("--random-seed",  type=int,   default=42,    help="Base random seed")
 
     args = parser.parse_args()

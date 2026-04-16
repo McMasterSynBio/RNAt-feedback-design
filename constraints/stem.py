@@ -29,7 +29,7 @@ class StemConstraint(nc.StrandConstraint):
 
         seq = seqs[0].replace("T", "U")
         bps, v = _stem_length(seq)
-        e = 0 if self.lo <= v <= self.hi else 1e5
+        e = 0 if self.lo <= v <= self.hi else 1e2
 
         return nc.Result(
             excess=e * self.weight,

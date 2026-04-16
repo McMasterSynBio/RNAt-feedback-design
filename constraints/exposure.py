@@ -9,6 +9,12 @@ class KozakExposureConstraint(nc.StrandConstraint):
 
     Uses NUPACK's partition function (ΔG_ensemble) across a temperature sweep
     to locate the Kozak exposure probability.
+
+    Inputs:
+        target: Desired Kozak exposure probability (0-100C).
+        weight: Relative importance of this constraint in the overall design.
+        t_step: Temperature step size for the sweep (°C).
+        alpha: Weighting factor between average exposure and bottleneck probability (0-1).
     """
 
     def __init__(

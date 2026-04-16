@@ -1,0 +1,210 @@
+Testing sequence: UAUAUAUCGACACGAUAUAUAAUGG
+GC/AU: 0.28 |                     Loop size: 3 |                     Stem length: 9
+0.9993536125387071
+Mean exposure below target: 0.9995815852957568
+Mean exposure above target: 0.9991364956272315
+0.9993306274565011
+Mean exposure below target: 0.9995661406517391
+Mean exposure above target: 0.9991063291753219
+0.9993068787830595
+Mean exposure below target: 0.9995501779797852
+Mean exposure above target: 0.999075165262368
+0.9992823409339547
+Mean exposure below target: 0.9995336810927424
+Mean exposure above target: 0.9990429693541568
+0.9992569872805281
+Mean exposure below target: 0.9995166332735762
+Mean exposure above target: 0.9990097053823868
+0.9992307900887392
+Mean exposure below target: 0.9994990172521419
+Mean exposure above target: 0.9989753356474028
+0.9992037204533446
+Mean exposure below target: 0.999480815180466
+Mean exposure above target: 0.9989398207132284
+0.9991757482270082
+Mean exposure below target: 0.9994620086064216
+Mean exposure above target: 0.9989031192942333
+0.999146841943919
+Mean exposure below target: 0.99944257844567
+Mean exposure above target: 0.9988651881327276
+0.9991169687374577
+Mean exposure below target: 0.9994225049517315
+Mean exposure above target: 0.9988259818667204
+0.9990860942514144
+Mean exposure below target: 0.9994017676840375
+Mean exposure above target: 0.9987854528870107
+0.9990541825442327
+Mean exposure below target: 0.9993803454737991
+Mean exposure above target: 0.9987435511827405
+0.999021195985703
+Mean exposure below target: 0.9993582163875161
+Mean exposure above target: 0.9987002241744529
+0.9989870951455037
+Mean exposure below target: 0.9993353576879358
+Mean exposure above target: 0.9986554165336636
+0.9989518386729391
+Mean exposure below target: 0.9993117457922527
+Mean exposure above target: 0.9986090699878785
+0.9989153831671975
+Mean exposure below target: 0.999287356227317
+Mean exposure above target: 0.9985611231099405
+0.9988776830374015
+Mean exposure below target: 0.9992621635816115
+Mean exposure above target: 0.9985115110905349
+0.9988386903517085
+Mean exposure below target: 0.9992361414537181
+Mean exposure above target: 0.9984601654926518
+0.9987983546746746
+Mean exposure below target: 0.9992092623969873
+Mean exposure above target: 0.9984070139867578
+0.9987566228920911
+Mean exposure below target: 0.9991814978600863
+Mean exposure above target: 0.9983519800654287
+0.9987134390224807
+Mean exposure below target: 0.9991528181230762
+Mean exposure above target: 0.9982949827361994
+0.9986687440144532
+Mean exposure below target: 0.9991231922286407
+Mean exposure above target: 0.9982359361914176
+0.9986224755291312
+Mean exposure below target: 0.9990925879080492
+Mean exposure above target: 0.9981747494539712
+0.9985745677069134
+Mean exposure below target: 0.9990609715014077
+Mean exposure above target: 0.9981113259978708
+0.9985249509178976
+Mean exposure below target: 0.999028307871703
+Mean exposure above target: 0.9980455633428443
+0.998473551495407
+Mean exposure below target: 0.9989945603121126
+Mean exposure above target: 0.9979773526223535
+0.9984202914521996
+Mean exposure below target: 0.9989596904459992
+Mean exposure above target: 0.9979065781247717
+0.9983650881791536
+Mean exposure below target: 0.9989236581189654
+Mean exposure above target: 0.9978331168079041
+0.9983078541264742
+Mean exposure below target: 0.9988864212822909
+Mean exposure above target: 0.9977568377876013
+0.9982484964678294
+Mean exposure below target: 0.9988479358670206
+Mean exposure above target: 0.9976776018019332
+0.9981869167482307
+Mean exposure below target: 0.9988081556479098
+Mean exposure above target: 0.9975952606532978
+0.9981230105170406
+Mean exposure below target: 0.9987670320963883
+Mean exposure above target: 0.9975096566319476
+0.9980566669481404
+Mean exposure below target: 0.9987245142216205
+Mean exposure above target: 0.9974206219257786
+0.9979877684501087
+Mean exposure below target: 0.9986805483987027
+Mean exposure above target: 0.9973279780228763
+0.99791619027024
+Mean exposure below target: 0.9986350781829589
+Mean exposure above target: 0.9972315351152696
+0.9978418000974021
+Mean exposure below target: 0.9985880441092441
+Mean exposure above target: 0.9971310915146951
+0.9977644576700909
+Mean exposure below target: 0.9985393834751031
+Mean exposure above target: 0.9970264330938889
+0.9976840143976603
+Mean exposure below target: 0.9984890301065954
+Mean exposure above target: 0.9969173327701026
+0.997600313004522
+Mean exposure below target: 0.9984369141055334
+Mean exposure above target: 0.9968035500511779
+0.9975131872092232
+Mean exposure below target: 0.9983829615768745
+Mean exposure above target: 0.9966848306686028
+--------------------------------------------------
+Testing sequence: GGAUCCGCGUUUUUUUACUAGUCUGCAGAAAAAAACGCAUGGCUUCUGGUGCCAUGG
+GC/AU: 0.47368421052631576 |                     Loop size: 4 |                     Stem length: 20
+0.025084337877726785
+Mean exposure below target: 0.016896346130695017
+Mean exposure above target: 0.03288242525585229
+0.025883492636330004
+Mean exposure below target: 0.017496187251711294
+Mean exposure above target: 0.033871402526443065
+0.02670146578204725
+Mean exposure below target: 0.018112872500831576
+Mean exposure above target: 0.03488107843082408
+0.027538441676310574
+Mean exposure below target: 0.018746666534287686
+Mean exposure above target: 0.03591156085918953
+0.02839460043477314
+Mean exposure below target: 0.019397828135597678
+Mean exposure above target: 0.03696295500541644
+0.029270118549603947
+Mean exposure below target: 0.02006660973873544
+Mean exposure above target: 0.03803536503614541
+0.03016516965409587
+Mean exposure below target: 0.020753256967309723
+Mean exposure above target: 0.03912889602246364
+0.031079925443760485
+Mean exposure below target: 0.02145800819474655
+Mean exposure above target: 0.0402436561571071
+0.03201455676901169
+Mean exposure below target: 0.02218109413095548
+Mean exposure above target: 0.041379759281446174
+0.0329692349154987
+Mean exposure below target: 0.022922737441466133
+Mean exposure above target: 0.04253732774791067
+0.03394413308911856
+Mean exposure below target: 0.02368315240556896
+Mean exposure above target: 0.04371649564488008
+0.03493942812372431
+Mean exposure below target: 0.024462544620563385
+Mean exposure above target: 0.04491741241244901
+0.0359553024305268
+Mean exposure below target: 0.025261110759830913
+Mean exposure above target: 0.04614024687880861
+0.036991946209152644
+Mean exposure below target: 0.026079038393095094
+Mean exposure above target: 0.047385191748255076
+0.038049559941247625
+Mean exposure below target: 0.026916505877909187
+Mean exposure above target: 0.04865246857299852
+0.03912835718838715
+Mean exposure below target: 0.027773682332140236
+Mean exposure above target: 0.04994233324195562
+0.040228567716834786
+Mean exposure below target: 0.028650727697981042
+Mean exposure above target: 0.05125508202050501
+0.041350440972350376
+Mean exposure below target: 0.029547792908828314
+Mean exposure above target: 0.05259105817570473
+0.042494249928741734
+Mean exposure below target: 0.030465020171222573
+Mean exposure above target: 0.05395065922161712
+0.04366029533414069
+Mean exposure below target: 0.03140254337494434
+Mean exposure above target: 0.055334344819089595
+0.04484891037899884
+Mean exposure below target: 0.032360488645314406
+Mean exposure above target: 0.0567426453634602
+0.04606046580948356
+Mean exposure below target: 0.03333897505274741
+Mean exposure above target: 0.05817617129208942
+0.04729537550924906
+Mean exposure below target: 0.0343381154956669
+Mean exposure above target: 0.05963562314123205
+0.04855410257136975
+Mean exposure below target: 0.035358017773986304
+Mean exposure above target: 0.061121802378401605
+0.049837165880509945
+Mean exposure below target: 0.036398785871543875
+Mean exposure above target: 0.06263562303190622
+0.05114514722306542
+Mean exposure below target: 0.03746052146706495
+Mean exposure above target: 0.06417812413354208
+0.052478698940032105
+Mean exposure below target: 0.038543325694512076
+Mean exposure above target: 0.06575048298338453
+0.05383855213369081
+Mean exposure below target: 0.039647301174981
+Mean exposure above target: 0.06735402923722396
+0.0552255254348809
