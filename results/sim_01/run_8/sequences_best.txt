@@ -1,1 +1,0 @@
-strand_8  default_strand_group  TCATTGTGCCATCAAATGTC

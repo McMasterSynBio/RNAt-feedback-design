@@ -1,1 +1,0 @@
-strand_14  default_strand_group  AACGCTGAATACGAATTTGG

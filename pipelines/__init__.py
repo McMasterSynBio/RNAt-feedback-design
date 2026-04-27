@@ -1,4 +1,4 @@
-from .design import run_design_pipeline
+from .opt import run_design_pipeline
 # from .testseq import test_sequences_from_csv
 
 __all__ = [

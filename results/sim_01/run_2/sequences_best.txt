@@ -1,1 +1,0 @@
-strand_2  default_strand_group  TCAGTTACAGAGGGCAACCC

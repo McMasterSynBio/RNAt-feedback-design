@@ -3,6 +3,8 @@ __pycache__
 # Data
 data/*
 !data/.gitkeep
-results/sim_*
+results/*
 # Folders
 vendor
+# All code files must be contained
+!*.py

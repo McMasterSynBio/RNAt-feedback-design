@@ -1,6 +1,0 @@
-# Seed sequences for RNA thermosensor design
-# One sequence per line, all must be the same length
-# Lines starting with # are ignored
-#
-# These are example 30-nt seed sequences — replace with your own.
-CGCCAATTGGAAGCCACGAACATCTTTTTC

@@ -1,1 +1,0 @@
-strand_19  default_strand_group  ACTCTCCAGGGCCTGTAAAG
