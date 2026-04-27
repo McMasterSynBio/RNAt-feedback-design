@@ -2,7 +2,7 @@ import numpy as np
 from constraints.exposure import KozakExposureConstraint
 from utils.therm._exposure import _kozak_exposure_probability_temp
 
-def _exposure_window_means(
+def _exposure_window_weight(
     seq: str,
     exposure_constraint: KozakExposureConstraint,
 ) -> tuple[float | None, float | None]:

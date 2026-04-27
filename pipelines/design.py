@@ -19,7 +19,7 @@ import numpy as np
 import nuad.constraints as nc
 import nuad.search as ns
 
-from .helpers.mean_exposure import _exposure_window_means
+from .helpers.mean_exposure import _exposure_window_weight
 from utils.therm._exposure import _kozak_exposure_probability_temp
 
 from constraints import (
@@ -177,7 +177,7 @@ def _run_single(
     mean_exposure_below = None
     mean_exposure_above = None
     if constraints and isinstance(constraints[0], KozakExposureConstraint):
-        mean_exposure_below, mean_exposure_above = _exposure_window_means(best_seq, constraints[0])
+        mean_exposure_below, mean_exposure_above = _exposure_window_weight(best_seq, constraints[0])
 
     return DesignResult(
         sequence=best_seq,

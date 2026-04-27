@@ -13,6 +13,7 @@ Usage examples:
 """
 
 import argparse, os, sys
+from random import randint
 
 from pipelines import run_design_pipeline
 
@@ -30,7 +31,6 @@ def main():
     # Search control
     parser.add_argument("--max-iterations", type=int, default=50,  help="Max NUAD iterations per run")
     parser.add_argument("--out-dir",      type=str,   default="results/design", help="Output directory")
-    parser.add_argument("--random-seed",  type=int,   default=42,    help="Base random seed")
 
     args = parser.parse_args()
 
@@ -42,13 +42,17 @@ def main():
     out_root = os.path.join(args.out_dir, f"sim_{n_sim+1:02d}")
     os.makedirs(out_root, exist_ok=True)
 
+    # generate random seed
+    random_seed = randint(0, 2**16 - 1)
+
+
     run_design_pipeline(
         flank_length=args.flank_seq_length,
         num_runs=args.num_runs,
         target_tm=args.target_tm,
         max_iterations=args.max_iterations,
         out_directory=out_root,
-        base_random_seed=args.random_seed,
+        base_random_seed=random_seed,
     )
 
 

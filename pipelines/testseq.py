@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from constraints import CompositionConstraint, LoopConstraint, StemConstraint, KozakExposureConstraint
-from .helpers.mean_exposure import _exposure_window_means
+from .helpers.mean_exposure import _exposure_window_weight
 
 def test_sequences_from_csv():
     KOZAK = "AUGG"
@@ -43,7 +43,7 @@ def test_sequences_from_csv():
             print("-" * 68, file=fh)
             for exposure_constraint in exposure_constraints:
                 result = exposure_constraint.evaluate((seq,), None)
-                mean_below, mean_above = _exposure_window_means(seq, exposure_constraint)
+                mean_below, mean_above = _exposure_window_weight(seq, exposure_constraint)
                 below_str = "NA" if mean_below is None else f"{mean_below:.4f}"
                 above_str = "NA" if mean_above is None else f"{mean_above:.4f}"
                 print(
