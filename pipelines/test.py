@@ -20,14 +20,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     # csv filename
-    csv_filename = os.path.basename(args.input_dir)
+    csv_filename = os.path.basename(args.input_dir).split(".")[0]
 
     KOZAK = "AUGG"
     df = pd.read_csv(args.input_dir)
 
     # Evaluate each sequence against the constraints
-    os.makedirs(f"./results/{csv_filename}/testexp", exist_ok=True)
-    with open(f"./results/{csv_filename}/testexp/results.txt", "w") as fh:
+    os.makedirs(f"./results/test/{csv_filename}", exist_ok=True)
+    with open(f"./results/test/{csv_filename}/results.txt", "w") as fh:
         for row in df.itertuples(index=False):
             name = row.name
             seq = str(row.sequence).upper()

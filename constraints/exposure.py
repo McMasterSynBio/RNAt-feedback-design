@@ -42,6 +42,17 @@ class KozakExposureConstraint(nc.StrandConstraint):
         self.t_step = t_step
         self.alpha = alpha
 
+        # Constraint hardcoded params
+        # (for future step constraint update)
+        self.theta_low = 0.2
+        self.theta_high = 0.8
+        self.delta = 2.0
+        self.W_max = 4.0
+        self.lambda_low = 1.0
+        self.lambda_high = 1.0
+        self.lambda_center = 2.0
+        self.lambda_width = 2.0
+
     def _evaluate(self, seqs: tuple[str, ...], strand: nc.Strand | None) -> nc.Result:
         
         seq = seqs[0].replace("T", "U")
