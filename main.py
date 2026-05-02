@@ -24,18 +24,23 @@ def main():
     )
 
     # Core design parameters
-    parser.add_argument("--flank-seq-length",   type=int,   default=30,    help="Flank sequence length (nt)")
+    parser.add_argument("--flank-one-length",   type=int,   default=20,    help="Flank sequence length (nt)")
+    parser.add_argument("--flank-two-length",   type=int,   default=5,    help="Flank sequence length (nt)")
+    parser.add_argument("--kozak-seq", type=str, default="AAAAAA", help="Kozak sequence to include in the design")
+    parser.add_argument("--tail-seq", type=str, default="GCUUCAGGU", help="Tail sequence to include in the design")
+
     parser.add_argument("--num-runs",     type=int,   default=10,    help="Number of independent NUAD runs")
     parser.add_argument("--target-tm",    type=float, default=37.0,  help="Target melting temperature (°C)")
 
     # Search control
     parser.add_argument("--max-iterations", type=int, default=50,  help="Max NUAD iterations per run")
-    parser.add_argument("--out-dir",      type=str,   default="results/design", help="Output directory")
+    parser.add_argument("--out-dir",      type=str,   default="results/opt", help="Output directory")
 
     args = parser.parse_args()
 
     # Safety assertions
-    assert 8 < args.flank_seq_length < 31, "Flank sequence length must be between 9 and 30 nt."
+    assert 8 < args.flank_one_length < 31, "Flank sequence length must be between 9 and 30 nt."
+    assert 0 < args.flank_two_length < 11, "Flank sequence length must be between 1 and 10 nt."
 
     # dirs within /results
     n_sim = sum(1 for entry in os.scandir(args.out_dir) if entry.is_dir())
@@ -47,7 +52,10 @@ def main():
 
 
     run_design_pipeline(
-        flank_length=args.flank_seq_length,
+        kozak=args.kozak_seq,
+        tail=args.tail_seq,
+        flank_one_length=args.flank_one_length,
+        flank_two_length=args.flank_two_length,
         num_runs=args.num_runs,
         target_tm=args.target_tm,
         max_iterations=args.max_iterations,

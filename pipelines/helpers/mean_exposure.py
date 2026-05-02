@@ -2,7 +2,7 @@ import numpy as np
 from constraints.exposure import KozakExposureConstraint
 from utils.therm._exposure import _kozak_exposure_probability_temp
 
-def _exposure_window_weight(
+def exposure_window_weight(
     seq: str,
     exposure_constraint: KozakExposureConstraint,
 ) -> tuple[float | None, float | None]:
@@ -21,11 +21,12 @@ def _exposure_window_weight(
         exposure_constraint.t_hi + exposure_constraint.t_step,
         exposure_constraint.t_step,
     )
+    pos = exposure_constraint.pos
 
     weighted_probs = []
     for temp in temps:
         try:
-            avg, bn = _kozak_exposure_probability_temp(seq, temp)
+            avg, bn = _kozak_exposure_probability_temp(seq, temp, pos)
         except ValueError:
             return None, None
         weighted_probs.append(exposure_constraint.alpha * avg + (1 - exposure_constraint.alpha) * bn)

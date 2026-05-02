@@ -49,7 +49,7 @@ def exposure_window_prob(
     probs_bn = {}
     for temp in temps:
         try:
-            avg, bn = _kozak_exposure_probability_temp(seq, temp, kozak_pattern)
+            avg, bn = _kozak_exposure_probability_temp(seq, temp, kozak_pattern=kozak_pattern)
             probs_avg[temp] = avg
             probs_bn[temp] = bn
         except ValueError:

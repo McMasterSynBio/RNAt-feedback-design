@@ -19,6 +19,7 @@ class KozakExposureConstraint(nc.StrandConstraint):
 
     def __init__(
         self,
+        rs_pos: tuple[int,int],
         target: float = 37.0,
         weight: float = 1.0,
         t_step: float = 0.5,
@@ -42,6 +43,9 @@ class KozakExposureConstraint(nc.StrandConstraint):
         self.t_step = t_step
         self.alpha = alpha
 
+        # right stem position
+        self.pos = rs_pos
+
         # Constraint hardcoded params
         # (for future step constraint update)
         self.theta_low = 0.2
@@ -53,13 +57,18 @@ class KozakExposureConstraint(nc.StrandConstraint):
         self.lambda_center = 2.0
         self.lambda_width = 2.0
 
+    # For later debugging purposes
+    @property
+    def right_stem(self, seq: str) -> tuple[int,int]:
+        return seq[self.pos[0]:self.pos[1]]
+
     def _evaluate(self, seqs: tuple[str, ...], strand: nc.Strand | None) -> nc.Result:
         
         seq = seqs[0].replace("T", "U")
         avgs, bns = [], []
         temps = np.arange(self.t_lo, self.t_hi + self.t_step, self.t_step)
         for T in temps:
-            avg, bn = _kozak_exposure_probability_temp(seq, T)
+            avg, bn = _kozak_exposure_probability_temp(seq, T, self.pos)
             avgs.append(avg); bns.append(bn)
         # Consider bottlenecks and averages in error compute
         avgs, bns = np.array(avgs), np.array(bns)
