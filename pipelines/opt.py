@@ -92,10 +92,10 @@ def _build_constraints(
         A list of NUAD constraints.
     """
     return [
-        KozakExposureConstraint(rs_pos=rs_pos, target=target_tm, weight=10.0),
-        CompositionConstraint(),
-        LoopConstraint(),
-        StemConstraint(),
+        KozakExposureConstraint(rs_pos=rs_pos, target=target_tm, weight=10.0, alpha=0.999),
+        # CompositionConstraint(),
+        # LoopConstraint(),
+        # StemConstraint(),
     ]
 
 
@@ -115,7 +115,10 @@ def _run_single(
     Execute one NUAD search and return the best sequence found.
     Args:
         run_id: Unique identifier for the run.
-        flank_length: Length of the RNA sequence flank to design.
+        kozak: Kozak sequence to include in the design.
+        tail: Tail sequence to include in the design.
+        flank_one_length: Length of the first RNA sequence flank to design.
+        flank_two_length: Length of the second RNA sequence flank to design.
         constraints: List of NUAD constraints to apply.
         out_root: Root directory for output files.
         random_seed: Random seed for reproducibility.
@@ -234,8 +237,14 @@ def run_design_pipeline(
 
     Parameters
     ----------
-    flank_length : int
-        Length of the RNA sequence flank to design.
+    kozak : str
+        Kozak sequence to include in the design.
+    tail : str
+        Tail sequence to include in the design.
+    flank_one_length : int
+        Length of the first RNA sequence flank to design.
+    flank_two_length : int
+        Length of the second RNA sequence flank to design.
     num_runs : int
         Number of independent search runs (diversity).
     target_tm : float
