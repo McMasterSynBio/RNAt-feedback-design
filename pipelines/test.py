@@ -30,16 +30,38 @@ if __name__ == "__main__":
         for row in df.itertuples(index=False):
             name = row.name if hasattr(row, "name") else row.rank
             seq = str(row.sequence).upper()
-            kozak = str(row.kozak).upper()
+            kozak_start = int(row.kozak_start)
+            kozak_end = int(row.kozak_end)
+            try:
+                right_stem_start = int(row.right_stem_start)
+                right_stem_end = int(row.right_stem_end)
+                start_codon_start = int(row.start_codon_start)
+                start_codon_end = int(row.start_codon_end)
+            except:
+                right_stem_start = None
+                right_stem_end = None
+                start_codon_start = None
+                start_codon_end = None
 
             print(f"Sequence: {name}", file=fh)
             print(f"RNA     : {seq}", file=fh)
-            print(f"Kozak    : {kozak}", file=fh)
+            print(f"Kozak    : {seq[kozak_start:kozak_end]}", file=fh)
+            if right_stem_start and start_codon_start:
+                print(f"Right Stem: {seq[right_stem_start:right_stem_end]}", file=fh)
+                print(f"Start Codon: {seq[start_codon_start:start_codon_end]}", file=fh)
             print("-" * 50, file=fh)
             window = ExposureWindow(t_lo=args.T_lo, t_hi=args.T_hi, t_step=args.T_step)
-            probs_avg, probs_bn = exposure_window_prob(seq, exposure_params=window, kozak_pattern=kozak)
-            print(f"{'Temp:':<22}" + ", ".join([f"{t:10.1f}" for t, _ in probs_avg.items()]), file=fh)
-            print(f"{'Exposure Avgv:':<22}" + ", ".join([f"{float(n):10.6f}" for _, n in probs_avg.items()]), file=fh)
-            print(f"{'Exposure Bottleneck:':<22}" + ", ".join([f"{float(n):10.6f}" for _, n in probs_bn.items()]), file=fh)
+            kozak_probs_avg, kozak_probs_bn = exposure_window_prob(seq, exposure_params=window, pos=(kozak_start, kozak_end))
+            if right_stem_start and start_codon_start:
+                right_stem_probs_avg, right_stem_probs_bn = exposure_window_prob(seq, exposure_params=window, pos=(right_stem_start, right_stem_end))
+                start_codon_probs_avg, start_codon_probs_bn = exposure_window_prob(seq, exposure_params=window, pos=(start_codon_start, start_codon_end))
+            print(f"{'Temp:':<40}" + ", ".join([f"{t:10.1f}" for t, _ in kozak_probs_avg.items()]), file=fh)
+            print(f"{'Kozak Exposure Avgv:':<40}" + ", ".join([f"{float(n):10.6f}" for _, n in kozak_probs_avg.items()]), file=fh)
+            print(f"{'Kozak Exposure Bottleneck:':<40}" + ", ".join([f"{float(n):10.6f}" for _, n in kozak_probs_bn.items()]), file=fh)
+            if right_stem_start and start_codon_start:
+                print(f"{'Right Stem Exposure Avgv:':<40}" + ", ".join([f"{float(n):10.6f}" for _, n in right_stem_probs_avg.items()]), file=fh)
+                print(f"{'Right Stem Exposure Bottleneck:':<40}" + ", ".join([f"{float(n):10.6f}" for _, n in right_stem_probs_bn.items()]), file=fh)
+                print(f"{'Start Codon Exposure Avgv:':<40}" + ", ".join([f"{float(n):10.6f}" for _, n in start_codon_probs_avg.items()]), file=fh)
+                print(f"{'Start Codon Exposure Bottleneck:':<40}" + ", ".join([f"{float(n):10.6f}" for _, n in start_codon_probs_bn.items()]), file=fh)
             print("-" * 50, file=fh)
             print(file=fh)

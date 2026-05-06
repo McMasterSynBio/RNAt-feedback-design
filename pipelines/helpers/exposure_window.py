@@ -3,7 +3,6 @@ from dataclasses import dataclass
 import numpy as np
 from constraints.exposure import KozakExposureConstraint
 from utils.therm._exposure import _kozak_exposure_probability_temp
-from data.kozak_pattern import KOZAK
 
 @dataclass
 class ExposureWindow:
@@ -16,7 +15,8 @@ def exposure_window_prob(
     seq: str,
     exposure_constraint: KozakExposureConstraint = None,
     exposure_params: ExposureWindow = None,
-    kozak_pattern: str = KOZAK
+    pattern: str = None,
+    pos: str = None
 ) -> tuple[float | None, float | None]:
     """
     Calculate the mean exposure probabilities below and above the target temperature.
@@ -30,7 +30,8 @@ def exposure_window_prob(
     """
 
     assert exposure_constraint is not None or exposure_params is not None, "Either exposure_constraint or exposure_params must be provided."
-    
+    assert pattern is not None or pos is not None, "Either pattern or pos must be provided."
+
     temps = None
     if exposure_constraint is not None:
         temps = np.arange(
@@ -49,7 +50,7 @@ def exposure_window_prob(
     probs_bn = {}
     for temp in temps:
         try:
-            avg, bn = _kozak_exposure_probability_temp(seq, temp, kozak_pattern=kozak_pattern)
+            avg, bn = _kozak_exposure_probability_temp(seq, temp, kozak_pattern=pattern, rs_pos=pos)
             probs_avg[temp] = avg
             probs_bn[temp] = bn
         except ValueError:
